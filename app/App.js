@@ -1,6 +1,7 @@
 var React = require('react');
 var Store = require('./Store.js');
 var actions = require('./actions.js');
+var ReactDom = require('react-dom');
 
 var App = React.createClass({
   getInitialState: function () {
@@ -22,7 +23,7 @@ var App = React.createClass({
   },
   addMessage: function (event) {
     event.preventDefault();
-    var input = this.refs.newMessage.getDOMNode();
+    var input = ReactDom.findDOMNode(this.refs.newMessage);
     actions.addMessage(input.value);
     this.setState({
       newMessage: ''
@@ -33,15 +34,13 @@ var App = React.createClass({
       newMessage: event.target.value
     });
   },
-  renderMessages: function (message) {
-    return (
-      <div>{message}</div>
-    );
-  },
 	render: function() {
 		return (
 			<div>
-        {this.state.messages.map(this.renderMessages)}
+        {this.state.messages.map( 
+          (message, i)=> 
+            <div key={i+message} >{message}</div> 
+        )}
         <form onSubmit={this.addMessage}>
           <input ref="newMessage" type="text" value={this.state.newMessage} onChange={this.updateNewMessage}/>
         </form>
