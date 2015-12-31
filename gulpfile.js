@@ -26,10 +26,9 @@ var dependencies = [
 
 var browserifyTask = function (options) {
 
-  // Our app bundler
 	var appBundler = browserify({
 		entries: [options.src], // Only need initial file, browserify finds the rest
-   	transform: [babelify], // We want to convert JSX to normal javascript
+   	transform: [["babelify", {presets: ["es2015", "react"]}]], // We want to convert JSX to normal javascript
 		debug: options.development, // Gives us sourcemapping
 		cache: {}, packageCache: {}, fullPaths: options.development // Requirement of watchify
 	});
@@ -74,7 +73,7 @@ var browserifyTask = function (options) {
 		var testBundler = browserify({
 			entries: testFiles,
 			debug: true, // Gives us sourcemapping
-			transform: [babelify],
+      transform: [["babelify", {presets: ["es2015", "react"]}]], // We want to convert JSX to normal javascript
 			cache: {}, packageCache: {}, fullPaths: true // Requirement of watchify
 		});
 
