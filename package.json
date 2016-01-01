@@ -6,6 +6,8 @@
   "license": "ISC",
   "devDependencies": {
     "babelify": "^7.2.0",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
     "browserify": "^11.0.0",
     "glob": "^5.0.14",
     "gulp": "^3.9.0",
@@ -23,12 +25,25 @@
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.3.0"
   },
+  "browser": {
+    "jquery": "./node_modules/jquery/dist/jquery.js",
+    "bootstrap": "./node_modules/bootstrap/dist/js/bootstrap.js"
+  },
   "dependencies": {
-    "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13",
+    "bootstrap": "^3.3.6",
+    "bower": "^1.7.2",
+    "browserify-bower": "^0.6.0",
+    "browserify-shim": "^3.8.11",
     "flux-react": "^2.6.7",
+    "gulp-bower": "0.0.11",
+    "gulp-bower-files": "^0.2.7",
+    "gulp-clean": "^0.3.1",
+    "jquery": "^2.1.4",
+    "main-bower-files": "^2.11.0",
     "marked": "^0.3.5",
     "react": "^0.14.5",
+    "react-addons-clone-with-props": "^0.14.5",
+    "react-addons-linked-state-mixin": "^0.14.5",
     "react-dom": "^0.14.5"
   }
 }
