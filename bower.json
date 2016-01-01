@@ -1,0 +1,31 @@
+{
+  "name": "flux-react-boilerplate",
+  "description": "React application boilerplate",
+  "main": "",
+  "authors": [
+    "Gabriel Lipson"
+  ],
+  "license": "ISC",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.1.4"
+  },
+  "overrides":{
+     "bootstrap" : {
+          "main": [
+             "dist/css/bootstrap.css",
+             "dist/js/bootstrap.js"
+           ]
+     }
+   }
+}
