@@ -29,9 +29,15 @@ gulp.task('appCss', function(){
 
 gulp.task('vendorCss', function(){
   
-  return bundleCss('build/css/vendor.css', bowerFiles({ filter: /\.css$/i }))
+  return bundleCss('build/css/vendor.css', bowerFiles({ filter: "**/*.css" }))
     .on('error', gutil.log)
     .pipe(notify(()=> console.log('built /build/css/vendor.css')))
+})
+
+gulp.task('vendorFonts', function(){
+  // return gulp.src(bowerFiles({filter:"**/*.{eot,svg,ttf,woff,woff2,otf}"})).pipe(gulp.dest('build/fonts'))
+  //   .on('error', gutil.log)
+  //   .pipe(notify(()=> console.log('copied fonts')))
 })
 
 // Starts our development workflow
@@ -52,14 +58,14 @@ gulp.task('appJs', function () {
 
 gulp.task('vendorJs', function() {
   var browserifyVendor = browserify({ debug: true, require: DEPS })
-  .plugin('browserify-bower', { require: ['*'] });
+  .plugin('browserify-bower', { require: ['*'], external: ['font-awesome'] });
 
   return bundle('./build/js/vendor.js', browserifyVendor)
     .on('error', gutil.log)
     .pipe(notify(()=> console.log('built /build/js/vendor.js')))
 })
 
-gulp.task('default', ['appCss', 'vendorCss', 'appJs', 'vendorJs'])
+gulp.task('default', ['appJs', 'vendorJs', 'appCss', 'vendorCss', 'vendorFonts'])
 
 gulp.task('watch', ['default'], function(){
   
@@ -68,6 +74,8 @@ gulp.task('watch', ['default'], function(){
   watch('node_modules/*', ()=> gulp.start('vendorJs') )
   watch('package.json', ()=> gulp.start('vendorJs') )
   watch('bower.json', ()=> gulp.start('vendorCss') )
+  watch('bower.json', ()=> gulp.start('vendorJs') )
+  watch('bower.json', ()=> gulp.start('vendorFonts') )
 
 })
 
