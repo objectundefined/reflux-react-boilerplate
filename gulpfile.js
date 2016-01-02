@@ -1,8 +1,10 @@
 var gulp = require('gulp');
+var watch = require('gulp-watch');
 var path = require('path');
 var browserify = require('browserify');
 var babelify = require('babelify');
 var browserifyBower = require('browserify-bower');
+var bowerFiles = require('main-bower-files');
 var gutil = require('gulp-util');
 var notify = require('gulp-notify');
 var source = require('vinyl-source-stream'); // Used to stream bundle for further handling
@@ -17,13 +19,19 @@ const MAIN = './app/main.js';
 const DEPS = Object.keys(require('./package.json').dependencies);
 const BOWER_DEPS = Object.keys(require('./bower.json').dependencies);
 
-
 gulp.task('appCss', function(){
   
-  return bundleCss('build/main.css', 'styles/**/*.css')
+  return bundleCss('build/css/main.css', 'styles/**/*.css')
     .on('error', gutil.log)
-    .pipe(notify(()=> console.log('built /build/main.css')))
+    .pipe(notify(()=> console.log('built /build/css/main.css')))
 
+})
+
+gulp.task('vendorCss', function(){
+  
+  return bundleCss('build/css/vendor.css', bowerFiles({ filter: /\.css$/i }))
+    .on('error', gutil.log)
+    .pipe(notify(()=> console.log('built /build/css/vendor.css')))
 })
 
 // Starts our development workflow
@@ -36,9 +44,9 @@ gulp.task('appJs', function () {
     cache: {}, packageCache: {}, fullPaths: DEV
   }).external( DEPS.concat(BOWER_DEPS) );
 
-  return bundle('./build/main.js', browserifyApp)
+  return bundle('./build/js/main.js', browserifyApp)
     .on('error', gutil.log)
-    .pipe(notify(()=> console.log('built /build/main.js')))
+    .pipe(notify(()=> console.log('built /build/js/main.js')))
     
 });
 
@@ -48,12 +56,16 @@ gulp.task('vendorJs', function() {
     require: DEPS
   }).plugin('browserify-bower', { require: ['*'] });
 
-  return bundle('./build/vendor.js', browserifyVendor)
+  return bundle('./build/js/vendor.js', browserifyVendor)
     .on('error', gutil.log)
-    .pipe(notify(()=> console.log('built /build/vendor.js')))
+    .pipe(notify(()=> console.log('built /build/js/vendor.js')))
 })
 
-gulp.task('default', ['appCss', 'appJs', 'vendorJs'])
+gulp.task('default', ['appCss', 'vendorCss', 'appJs', 'vendorJs'], function(){
+
+console.log('here')
+
+})
 
 
 
@@ -71,7 +83,9 @@ function bundle( dest, bundleable ) {
 function bundleCss( dest, src ) {
   var filename = path.basename(dest);
   var dirname = path.dirname(dest);
-  return gulp.src(src).pipe(concatCss( dest ));
+  return gulp.src(src)
+    .pipe(concatCss(filename))
+    .pipe(gulp.dest(dirname));
 }
 
 
