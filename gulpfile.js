@@ -1,5 +1,82 @@
 var gulp = require('gulp');
-var clean = require('gulp-clean');
+var path = require('path');
+var browserify = require('browserify');
+var babelify = require('babelify');
+var browserifyBower = require('browserify-bower');
+var gutil = require('gulp-util');
+var notify = require('gulp-notify');
+var source = require('vinyl-source-stream'); // Used to stream bundle for further handling
+var concatCss = require('gulp-concat-css');
+ 
+const DEV = true;
+const OUT = "./build";
+const TRANSFORMS = {
+  BABEL : [ "babelify", { presets : [ "es2015", "react"] } ]
+};
+const MAIN = './app/main.js';
+const DEPS = Object.keys(require('./package.json').dependencies);
+const BOWER_DEPS = Object.keys(require('./bower.json').dependencies);
+
+
+gulp.task('appCss', function(){
+  
+  return bundleCss('build/main.css', 'styles/**/*.css')
+    .on('error', gutil.log)
+    .pipe(notify(()=> console.log('built /build/main.css')))
+
+})
+
+// Starts our development workflow
+gulp.task('appJs', function () {
+
+  var browserifyApp = browserify({
+    entries: [ MAIN ],
+    transform: [ TRANSFORMS.BABEL ],
+    debug: DEV,
+    cache: {}, packageCache: {}, fullPaths: DEV
+  }).external( DEPS.concat(BOWER_DEPS) );
+
+  return bundle('./build/main.js', browserifyApp)
+    .on('error', gutil.log)
+    .pipe(notify(()=> console.log('built /build/main.js')))
+    
+});
+
+gulp.task('vendorJs', function() {
+  var browserifyVendor = browserify({
+    debug: true,
+    require: DEPS
+  }).plugin('browserify-bower', { require: ['*'] });
+
+  return bundle('./build/vendor.js', browserifyVendor)
+    .on('error', gutil.log)
+    .pipe(notify(()=> console.log('built /build/vendor.js')))
+})
+
+gulp.task('default', ['appCss', 'appJs', 'vendorJs'])
+
+
+
+
+
+
+function bundle( dest, bundleable ) {
+  var filename = path.basename(dest);
+  var dirname = path.dirname(dest);
+  return bundleable.bundle()
+    .pipe(source(filename))
+    .pipe(gulp.dest(dirname))
+}
+
+function bundleCss( dest, src ) {
+  var filename = path.basename(dest);
+  var dirname = path.dirname(dest);
+  return gulp.src(src).pipe(concatCss( dest ));
+}
+
+
+`
+var gulp = require('gulp');
 var source = require('vinyl-source-stream'); // Used to stream bundle for further handling
 var browserify = require('browserify');
 var watchify = require('watchify');
@@ -17,19 +94,20 @@ var glob = require('glob');
 var jasminePhantomJs = require('gulp-jasmine2-phantomjs');
 var bowerFiles = require('main-bower-files');
 
+
 // External dependencies you do not want to rebundle while developing,
 // but include in your application deployment
 var dependencies = [
-	'react',
-	'react-dom',
-  'react/addons',
-  'flux-react'
+    'react',
+    'react-dom',
+    'react/addons',
+    'flux-react'
 ];
 
-// gulp.src(bowerFiles({ filter: /\.css$/i })).pipe(gulp.dest('lib/'));
-// gulp.task('clean',function(){
-//     return gulp.src('lib/').pipe(clean())
-// })
+gulp.src(bowerFiles({ filter: /\.css$/i })).pipe(gulp.dest('lib/'));
+gulp.task('clean',function(){
+    return gulp.src('lib/').pipe(clean())
+})
 
 var browserifyTask = function (options) {
 
@@ -187,3 +265,4 @@ gulp.task('deploy', function () {
 gulp.task('test', function () {
     return gulp.src('./build/testrunner-phantomjs.html').pipe(jasminePhantomJs());
 });
+`

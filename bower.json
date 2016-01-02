@@ -20,12 +20,12 @@
     "bootstrap": "~3.3.6",
     "jquery": "~2.1.4"
   },
-  "overrides":{
-     "bootstrap" : {
-          "main": [
-             "dist/css/bootstrap.css",
-             "dist/js/bootstrap.js"
-           ]
-     }
-   }
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/css/bootstrap.css",
+        "dist/js/bootstrap.js"
+      ]
+    }
+  }
 }
