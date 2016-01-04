@@ -19,7 +19,8 @@
   "dependencies": {
     "bootstrap": "~3.3.6",
     "jquery": "~2.1.4",
-    "font-awesome": "fontawesome#~4.5.0"
+    "font-awesome": "fontawesome#~4.5.0",
+    "underscore": "~1.8.3"
   },
   "overrides": {
     "font-awesome": {
@@ -31,7 +32,6 @@
         "fonts/fontawesome-webfont.woff",
         "fonts/fontawesome-webfont.woff2",
         "fonts/FontAwesome.otf"
-        
       ]
     },
     "bootstrap": {

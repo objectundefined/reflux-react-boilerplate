@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var watch = require('gulp-watch');
 var path = require('path');
 var browserify = require('browserify');
 var babelify = require('babelify');
@@ -9,7 +8,9 @@ var gutil = require('gulp-util');
 var notify = require('gulp-notify');
 var source = require('vinyl-source-stream'); // Used to stream bundle for further handling
 var concatCss = require('gulp-concat-css');
- 
+var rimraf = require('gulp-rimraf'); 
+var webserver = require('gulp-webserver');
+
 const DEV = true;
 const OUT = "./build";
 const TRANSFORMS = {
@@ -23,24 +24,23 @@ gulp.task('appCss', function(){
   
   return bundleCss('build/css/main.css', 'styles/**/*.css')
     .on('error', gutil.log)
-    .pipe(notify(()=> console.log('built /build/css/main.css')))
+    .pipe(notify({ message: 'built /build/css/main.css' }))
 
-})
-
-gulp.task('vendorCss', function(){
-  
-  return bundleCss('build/css/vendor.css', bowerFiles({ filter: "**/*.css" }))
-    .on('error', gutil.log)
-    .pipe(notify(()=> console.log('built /build/css/vendor.css')))
 })
 
 gulp.task('vendorFonts', function(){
-  // return gulp.src(bowerFiles({filter:"**/*.{eot,svg,ttf,woff,woff2,otf}"})).pipe(gulp.dest('build/fonts'))
-  //   .on('error', gutil.log)
-  //   .pipe(notify(()=> console.log('copied fonts')))
+  return gulp.src(bowerFiles({filter:"**/*.{eot,svg,ttf,woff,woff2,otf}"})).pipe(gulp.dest('build/fonts'))
+    .on('error', gutil.log)
+    .pipe(notify({onLast: true, message: 'build /build/fonts/*.{eot,svg,ttf,woff,woff2,otf}'}))
 })
 
-// Starts our development workflow
+gulp.task('vendorCss', ['vendorFonts'], function(){
+  
+  return bundleCss('build/css/vendor.css', bowerFiles({ filter: "**/*.css" }))
+    .on('error', gutil.log)
+    .pipe(notify({ message: 'built /build/css/vendor.css' }))
+})
+
 gulp.task('appJs', function () {
 
   var browserifyApp = browserify({
@@ -52,7 +52,7 @@ gulp.task('appJs', function () {
 
   return bundle('./build/js/main.js', browserifyApp)
     .on('error', gutil.log)
-    .pipe(notify(()=> console.log('built /build/js/main.js')))
+    .pipe(notify({ message: 'built /build/js/main.js' }))
     
 });
 
@@ -62,36 +62,44 @@ gulp.task('vendorJs', function() {
 
   return bundle('./build/js/vendor.js', browserifyVendor)
     .on('error', gutil.log)
-    .pipe(notify(()=> console.log('built /build/js/vendor.js')))
+    .pipe(notify({ message: 'built /build/js/vendor.js' }))
 })
 
-gulp.task('default', ['appJs', 'vendorJs', 'appCss', 'vendorCss', 'vendorFonts'])
+gulp.task('clean', function(){  
+    
+  return gulp.src(['build/js','build/css', 'build/fonts'])
+    .pipe(rimraf())
+    .on('error', gutil.log)
+    .pipe(notify({onLast:true, message: 'cleaned build directory' }))
+})
+
+gulp.task('default', ['appJs', 'vendorJs', 'appCss', 'vendorCss'])
 
 gulp.task('watch', ['default'], function(){
-  
-  watch('app/*', ()=> gulp.start('appJs') )
-  watch('styles/*', ()=> gulp.start('appCss') )
-  watch('node_modules/*', ()=> gulp.start('vendorJs') )
-  watch('package.json', ()=> gulp.start('vendorJs') )
-  watch('bower.json', ()=> gulp.start('vendorCss') )
-  watch('bower.json', ()=> gulp.start('vendorJs') )
-  watch('bower.json', ()=> gulp.start('vendorFonts') )
-
+    gulp.watch('app/*', ['appJs'])
+    gulp.watch('styles/*', ['appCss'])
+    gulp.watch('package.json', ['vendorJs'])
+    gulp.watch('bower.json', ['vendorCss', 'vendorJs'])
+    gulp.src('./build/').pipe(webserver({
+      livereload: true,
+      open: true
+    }));
 })
 
-
 function bundle( dest, bundleable ) {
-  var filename = path.basename(dest);
-  var dirname = path.dirname(dest);
+  var [dirname, filename] = pathParts(dest)
   return bundleable.bundle()
     .pipe(source(filename))
     .pipe(gulp.dest(dirname))
 }
 
 function bundleCss( dest, src ) {
-  var filename = path.basename(dest);
-  var dirname = path.dirname(dest);
+  var [dirname, filename] = pathParts(dest)
   return gulp.src(src)
-    .pipe(concatCss(filename))
+    .pipe(concatCss(filename, { rebaseUrls: false }))
     .pipe(gulp.dest(dirname));
+}
+
+function pathParts(p) {
+  return [ path.dirname(p), path.basename(p) ]
 }

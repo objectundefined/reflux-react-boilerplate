@@ -1,6 +1,5 @@
 var Store = require('./Store.js');
 var actions = require('./actions.js');
-var marked = require('marked');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
@@ -54,9 +53,7 @@ var CommentList = React.createClass({
   render: function() {
     var commentNodes = this.props.comments.map(function(comment) {
       return (
-        <Comment author={comment.author} key={comment.id}>
-          {comment.text}
-        </Comment>
+        <Comment author={comment.author} key={comment.id} text={comment.text}></Comment>
       );
     });
     return (
@@ -90,35 +87,43 @@ var CommentForm = React.createClass({
   render: function() {
     return (
       <form className="commentForm" onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          placeholder="Your name"
-          value={this.state.author}
-          onChange={this.handleAuthorChange}
-        />
-        <textarea
-          placeholder="Say something..."
-          value={this.state.text}
-          onChange={this.handleTextChange}
-        />
-        <input type="submit" value="Post" />
+        <div className="form-group">
+          <label htmlFor="authorName">Your Name</label>
+          <input
+            className="form-control"
+            id="authorName"
+            type="text"
+            placeholder="John Doe"
+            value={this.state.author}
+            onChange={this.handleAuthorChange}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="messageInput">Message</label>
+          <textarea
+            className="form-control"
+            id="messageInput"
+            placeholder="Hello World"
+            value={this.state.text}
+            onChange={this.handleTextChange}
+          />
+        </div>
+        <button type="submit" value="Post" className="btn btn-default">Submit</button>
       </form>
     );
   }
 });
 
 var Comment = React.createClass({
-    rawMarkup: function() {
-      var rawMarkup = marked(this.props.children.toString(), {sanitize: true});
-      return { __html: rawMarkup };
-    },
     render: function() {
       return (
         <div className="comment">
-          <h2 className="commentAuthor">
-            {this.props.author}
-          </h2>
-          <span dangerouslySetInnerHTML={this.rawMarkup()} />
+          <b className="commentAuthor">
+            {this.props.author}:
+          </b>
+          <p className="commentText">
+            {this.props.text}
+          </p>
         </div>
       );
     }
