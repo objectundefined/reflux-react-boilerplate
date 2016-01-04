@@ -13,7 +13,7 @@ var webserver = require('gulp-webserver');
 var sourcemaps = require('gulp-sourcemaps');
 var postcss = require('gulp-postcss');
 var postcssUrl = require('postcss-url');
-
+var minifyCss = require('gulp-minify-css');
 
 const DEV = true;
 const TRANSFORMS = {
@@ -46,7 +46,7 @@ gulp.task('appJs', function () {
     cache: {}, packageCache: {}, fullPaths: DEV
   }).external( DEPS.concat(BOWER_DEPS) );
 
-  return bundle('build/js/main.js', browserifyApp)
+  return bundleJs('build/js/main.js', browserifyApp)
     .on('error', gutil.log)
     .pipe(notify({ message: 'built build/js/main.js' }))
     
@@ -56,7 +56,7 @@ gulp.task('vendorJs', function() {
   var browserifyVendor = browserify({ debug: true, require: DEPS })
   .plugin('browserify-bower', { require: ['*'], external: ['font-awesome'] });
 
-  return bundle('build/js/vendor.js', browserifyVendor)
+  return bundleJs('build/js/vendor.js', browserifyVendor)
     .on('error', gutil.log)
     .pipe(notify({ message: 'built build/js/vendor.js' }))
 })
@@ -88,7 +88,7 @@ gulp.task('watch', ['build'], function(){
     gulp.src('build/').pipe(webserver({ livereload: true, open: true }));
 })
 
-function bundle( dest, bundleable ) {
+function bundleJs( dest, bundleable ) {
   var [dirname, filename] = pathParts(dest)
   return bundleable.bundle()
     .pipe(source(filename))
@@ -96,11 +96,12 @@ function bundle( dest, bundleable ) {
 }
 
 function bundleCss( dest, src , assetConfig) {
-  var [dirname, filename] = pathParts(dest)
-  var { useHash, assetsPath } = assetConfig || { assetsPath: ".", useHash:false } 
+  var [dirname, filename] = pathParts(dest);
+  var { useHash, assetsPath } = assetConfig || { assetsPath: ".", useHash:false };
   return gulp.src(src)
     .pipe(sourcemaps.init())
     .pipe(postcss([ postcssUrl({ url: 'copy', assetsPath: assetsPath, useHash:useHash }) ], {to: dest }))
+    .pipe(minifyCss(useHash ? { rebase: false } : { relativeTo: 'app/css/', target: 'app/css/build.css' }))
     .pipe(concat(filename))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(dirname));
