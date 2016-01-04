@@ -3,8 +3,9 @@ var actions = require('./actions.js');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
-var $ = window.jQuery = require('jquery');
-var b = require('bootstrap')
+// var $ = window.jQuery = require('jquery');
+// var b = require('bootstrap')
+// var _ = require('underscore')
 
 var CommentBox = React.createClass({
   loadCommentsFromServer: function() {
