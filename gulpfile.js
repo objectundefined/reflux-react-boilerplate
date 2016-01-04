@@ -25,17 +25,17 @@ const BOWER_DEPS = Object.keys(require('./bower.json').dependencies);
 
 gulp.task('appCss', function(){
   
-  return bundleCss('static/assets/css/main.css', 'styles/**/*.css')
+  return bundleCss('build/css/main.css', 'styles/**/*.css')
     .on('error', gutil.log)
-    .pipe(notify({ message: 'built /static/assets/css/main.css' }))
+    .pipe(notify({ message: 'built build/css/main.css' }))
 
 })
 
 gulp.task('vendorCss', function(){
 
-  return bundleCss('static/assets/css/vendor.css', bowerFiles({ filter: "**/*.css" }))
+  return bundleCss('build/css/vendor.css', bowerFiles({ filter: "**/*.css" }))
     .on('error', gutil.log)
-    .pipe(notify({ message: 'built static/assets/css/vendor.css' }))
+    .pipe(notify({ message: 'built build/css/vendor.css' }))
 })
 
 gulp.task('appJs', function () {
@@ -47,9 +47,9 @@ gulp.task('appJs', function () {
     cache: {}, packageCache: {}, fullPaths: DEV
   }).external( DEPS.concat(BOWER_DEPS) );
 
-  return bundle('static/assets/js/main.js', browserifyApp)
+  return bundle('build/js/main.js', browserifyApp)
     .on('error', gutil.log)
-    .pipe(notify({ message: 'built static/assets/js/main.js' }))
+    .pipe(notify({ message: 'built build/js/main.js' }))
     
 });
 
@@ -57,14 +57,14 @@ gulp.task('vendorJs', function() {
   var browserifyVendor = browserify({ debug: true, require: DEPS })
   .plugin('browserify-bower', { require: ['*'], external: ['font-awesome'] });
 
-  return bundle('static/assets/js/vendor.js', browserifyVendor)
+  return bundle('build/js/vendor.js', browserifyVendor)
     .on('error', gutil.log)
-    .pipe(notify({ message: 'built static/assets/js/vendor.js' }))
+    .pipe(notify({ message: 'built build/js/vendor.js' }))
 })
 
 gulp.task('clean', function(){  
     
-  return gulp.src(['static/assets'])
+  return gulp.src(['build'])
     .pipe(rimraf())
     .on('error', gutil.log)
     .pipe(notify({onLast:true, message: 'cleaned build directory' }))
@@ -77,7 +77,7 @@ gulp.task('watch', ['default'], function(){
     gulp.watch('styles/*', ['appCss'])
     gulp.watch('package.json', ['vendorJs'])
     gulp.watch('bower.json', ['vendorCss', 'vendorJs'])
-    gulp.src('static/assets/').pipe(webserver({
+    gulp.src('build/').pipe(webserver({
       livereload: true,
       open: true
     }));
@@ -94,7 +94,7 @@ function bundleCss( dest, src ) {
   var [dirname, filename] = pathParts(dest)
   return gulp.src(src)
     .pipe(sourcemaps.init())
-    .pipe(postcss([ postcssUrl({ url: 'copy', assetsPath: '.' }) ], {to: dest}))
+    .pipe(postcss([ postcssUrl({ url: 'copy', assetsPath: '../static', useHash:true }) ], {to: dest }))
     .pipe(concat(filename))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(dirname));
