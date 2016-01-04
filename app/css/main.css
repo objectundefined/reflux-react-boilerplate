@@ -1,0 +1,7 @@
+body {
+	background-color: #EAEAEA;
+}
+
+.foo {
+  background:url("../images/foo.png");
+}

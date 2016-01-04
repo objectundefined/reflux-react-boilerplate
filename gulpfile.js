@@ -19,21 +19,20 @@ const DEV = true;
 const TRANSFORMS = {
   BABEL : [ "babelify", { presets : [ "es2015", "react"] } ]
 };
-const MAIN = './app/main.js';
+const MAIN = 'app/js/main.js';
 const DEPS = Object.keys(require('./package.json').dependencies);
 const BOWER_DEPS = Object.keys(require('./bower.json').dependencies);
 
 gulp.task('appCss', function(){
   
-  return bundleCss('build/css/main.css', 'styles/**/*.css')
+  return bundleCss('build/css/main.css', 'app/css/**/*.css')
     .on('error', gutil.log)
     .pipe(notify({ message: 'built build/css/main.css' }))
 
 })
 
 gulp.task('vendorCss', function(){
-
-  return bundleCss('build/css/vendor.css', bowerFiles({ filter: "**/*.css" }))
+  return bundleCss('build/css/vendor.css', bowerFiles({ filter: "**/*.css" }), { assetsPath: "../vendor_assets/", useHash: true })
     .on('error', gutil.log)
     .pipe(notify({ message: 'built build/css/vendor.css' }))
 })
@@ -70,17 +69,23 @@ gulp.task('clean', function(){
     .pipe(notify({onLast:true, message: 'cleaned build directory' }))
 })
 
-gulp.task('default', ['appJs', 'vendorJs', 'appCss', 'vendorCss'])
+gulp.task('copyHtml', function(){
+  return gulp.src('app/index.html').pipe(gulp.dest('build/'))
+    .on('error', gutil.log)
+    .pipe(notify({onLast:true, message: 'copied index.html' }))
+});
 
-gulp.task('watch', ['default'], function(){
-    gulp.watch('app/*', ['appJs'])
-    gulp.watch('styles/*', ['appCss'])
+gulp.task('build', ['appJs', 'vendorJs', 'appCss', 'vendorCss', 'copyHtml'])
+
+gulp.task('default', ['build']);
+
+gulp.task('watch', ['build'], function(){
+    gulp.watch('app/js/*', ['appJs'])
+    gulp.watch('app/css/*', ['appCss'])
+    gulp.watch('app/index.html', ['copyHtml'])
     gulp.watch('package.json', ['vendorJs'])
     gulp.watch('bower.json', ['vendorCss', 'vendorJs'])
-    gulp.src('build/').pipe(webserver({
-      livereload: true,
-      open: true
-    }));
+    gulp.src('build/').pipe(webserver({ livereload: true, open: true }));
 })
 
 function bundle( dest, bundleable ) {
@@ -90,11 +95,12 @@ function bundle( dest, bundleable ) {
     .pipe(gulp.dest(dirname)) 
 }
 
-function bundleCss( dest, src ) {
+function bundleCss( dest, src , assetConfig) {
   var [dirname, filename] = pathParts(dest)
+  var { useHash, assetsPath } = assetConfig || { assetsPath: ".", useHash:false } 
   return gulp.src(src)
     .pipe(sourcemaps.init())
-    .pipe(postcss([ postcssUrl({ url: 'copy', assetsPath: '../static', useHash:true }) ], {to: dest }))
+    .pipe(postcss([ postcssUrl({ url: 'copy', assetsPath: assetsPath, useHash:useHash }) ], {to: dest }))
     .pipe(concat(filename))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(dirname));
