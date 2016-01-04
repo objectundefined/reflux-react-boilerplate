@@ -14,18 +14,20 @@
     "gulp-bower": "0.0.11",
     "gulp-concat-css": "^2.2.0",
     "gulp-notify": "^2.2.0",
-    "gulp-plumber": "^1.0.1",
     "gulp-rimraf": "^0.2.0",
     "gulp-util": "^3.0.7",
+    "gulp-webserver": "^0.9.1",
     "main-bower-files": "^2.11.0",
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
     "flux-react": "^2.6.7",
-    "marked": "^0.3.5",
     "react": "^0.14.5",
     "react-addons-clone-with-props": "^0.14.5",
     "react-addons-linked-state-mixin": "^0.14.5",
     "react-dom": "^0.14.5"
+  },
+  "scripts": {
+    "gulp": "node --harmony_destructuring `which gulp`"
   }
 }

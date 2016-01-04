@@ -9,7 +9,7 @@ var notify = require('gulp-notify');
 var source = require('vinyl-source-stream'); // Used to stream bundle for further handling
 var concatCss = require('gulp-concat-css');
 var rimraf = require('gulp-rimraf'); 
-var plumber = require('gulp-plumber');
+var webserver = require('gulp-webserver');
 
 const DEV = true;
 const OUT = "./build";
@@ -79,21 +79,27 @@ gulp.task('watch', ['default'], function(){
     gulp.watch('app/*', ['appJs'])
     gulp.watch('styles/*', ['appCss'])
     gulp.watch('package.json', ['vendorJs'])
-    gulp.watch('bower.json', ['vendorCss', 'vendorJs'])  
+    gulp.watch('bower.json', ['vendorCss', 'vendorJs'])
+    gulp.src('./build/').pipe(webserver({
+      livereload: true,
+      open: true
+    }));
 })
 
 function bundle( dest, bundleable ) {
-  var filename = path.basename(dest);
-  var dirname = path.dirname(dest);
+  var [dirname, filename] = pathParts(dest)
   return bundleable.bundle()
     .pipe(source(filename))
     .pipe(gulp.dest(dirname))
 }
 
 function bundleCss( dest, src ) {
-  var filename = path.basename(dest);
-  var dirname = path.dirname(dest);
+  var [dirname, filename] = pathParts(dest)
   return gulp.src(src)
     .pipe(concatCss(filename, { rebaseUrls: false }))
     .pipe(gulp.dest(dirname));
+}
+
+function pathParts(p) {
+  return [ path.dirname(p), path.basename(p) ]
 }
