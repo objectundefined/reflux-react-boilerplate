@@ -1,11 +1,8 @@
-var Store = require('./Store.js');
-var actions = require('./actions.js');
-var React = require('react');
-var ReactDOM = require('react-dom');
-var LinkedStateMixin = require('react-addons-linked-state-mixin');
-// var $ = window.jQuery = require('jquery');
-// var b = require('bootstrap')
-// var _ = require('underscore')
+import { default as React } from 'react'
+import { default as ReactDOM } from 'react-dom'
+import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
+import { default as Store } from './Store'
+import { default as actions } from './actions'
 
 var CommentBox = React.createClass({
   loadCommentsFromServer: function() {
@@ -136,4 +133,4 @@ var App = React.createClass({
   }
 })
 
-module.exports = App;
+export default App

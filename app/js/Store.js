@@ -1,7 +1,7 @@
-var flux = require('flux-react');
-var actions = require('./actions.js');
+import { default as flux } from 'flux-react'
+import { default as actions } from './actions'
 
-module.exports = flux.createStore({
+export default flux.createStore({
   messages: [],
   actions: [
     actions.addMessage

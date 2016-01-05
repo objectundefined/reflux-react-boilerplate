@@ -1,5 +1,5 @@
-var flux = require('flux-react');
+import { default as flux } from 'flux-react'
 
-module.exports = flux.createActions([
+export default flux.createActions([
   'addMessage'
 ]);
