@@ -24,15 +24,13 @@ const DEPS = Object.keys(require('./package.json').dependencies);
 const BOWER_DEPS = Object.keys(require('./bower.json').dependencies);
 
 gulp.task('appCss', function(){
-  
   return bundleCss('build/css/main.css', 'app/css/**/*.css')
     .on('error', gutil.log)
     .pipe(notify({ message: 'built build/css/main.css' }))
-
 })
 
 gulp.task('vendorCss', function(){
-  return bundleCss('build/css/vendor.css', bowerFiles({ filter: "**/*.css" }), { assetsPath: "../vendor_assets/", useHash: true })
+  return bundleCss('build/css/vendor.css', bowerFiles({ filter: "**/*.css" }))
     .on('error', gutil.log)
     .pipe(notify({ message: 'built build/css/vendor.css' }))
 })
@@ -80,12 +78,16 @@ gulp.task('build', ['appJs', 'vendorJs', 'appCss', 'vendorCss', 'copyHtml'])
 gulp.task('default', ['build']);
 
 gulp.task('watch', ['build'], function(){
-    gulp.watch('app/js/*', ['appJs'])
-    gulp.watch('app/css/*', ['appCss'])
-    gulp.watch('app/index.html', ['copyHtml'])
-    gulp.watch('package.json', ['vendorJs'])
-    gulp.watch('bower.json', ['vendorCss', 'vendorJs'])
-    gulp.src('build/').pipe(webserver({ livereload: true, open: true }));
+  gutil.log('watching')
+  gulp.watch('app/js/*', ['appJs'])
+  gulp.watch('app/css/*', ['appCss'])
+  gulp.watch('app/index.html', ['copyHtml'])
+  gulp.watch('package.json', ['vendorJs'])
+  gulp.watch('bower.json', ['vendorCss', 'vendorJs'])
+})
+
+gulp.task('serve', ['build'], function(){
+  gulp.src('build/').pipe(webserver({ livereload: true, open: true }));
 })
 
 function bundleJs( dest, bundleable ) {
@@ -95,16 +97,14 @@ function bundleJs( dest, bundleable ) {
     .pipe(gulp.dest(dirname)) 
 }
 
-function bundleCss( dest, src , assetConfig) {
+function bundleCss( dest, src ) {
   var [dirname, filename] = pathParts(dest);
-  var { useHash, assetsPath } = assetConfig || { assetsPath: ".", useHash:false };
-  return gulp.src(src)
-    .pipe(sourcemaps.init())
-    .pipe(postcss([ postcssUrl({ url: 'copy', assetsPath: assetsPath, useHash:useHash }) ], {to: dest }))
-    .pipe(minifyCss(useHash ? { rebase: false } : { relativeTo: 'app/css/', target: 'app/css/build.css' }))
-    .pipe(concat(filename))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(dirname));
+  return gulp.src(src).pipe(sourcemaps.init())
+      .pipe(postcss([ postcssUrl({ url: 'copy', assetsPath: '../assets/', useHash:true }) ], {to: dest }))
+      .pipe(minifyCss( {rebase: false} ))
+      .pipe(concat(filename))
+      .pipe(sourcemaps.write())
+      .pipe(gulp.dest(dirname));
 }
 
 function pathParts(p) {
