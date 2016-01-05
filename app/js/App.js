@@ -114,9 +114,11 @@ var Comment = React.createClass({
       return (
         <div className="comment">
           <b className="commentAuthor">
-            {this.props.author} &nbsp;
-            { (this.props.pending) ? <span className="fa fa-spinner fa-spin"/> : ''}
+            {this.props.author}
           </b>
+          {(this.props.pending) && (
+             <span> saving <span className="fa fa-spinner fa-spin"/></span>
+          )}
           <p className="commentText">
             {this.props.text}
           </p>
