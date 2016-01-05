@@ -19,7 +19,7 @@ var gulpif = require('gulp-if');
 var streamify = require('gulp-streamify');
 var minimist = require('minimist');
 
-var options = minimist(process.argv.slice(2), {
+const options = minimist(process.argv.slice(2), {
   boolean: 'production',
   default: { production: process.env.NODE_ENV == 'production' , port: 8000  }
 });
