@@ -15,7 +15,7 @@ var postcss = require('gulp-postcss');
 var postcssUrl = require('postcss-url');
 var minifyCss = require('gulp-minify-css');
 
-const DEV = true;
+const DEV = false;
 const TRANSFORMS = {
   BABEL : [ "babelify", { presets : [ "es2015", "react"] } ]
 };
