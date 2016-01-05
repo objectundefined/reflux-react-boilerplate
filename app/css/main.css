@@ -2,6 +2,10 @@ body {
 	background-color: #EAEAEA;
 }
 
+hr {
+  border-color:#fff;
+}
+
 .commentBox {
   
   padding:15px;
