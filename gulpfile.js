@@ -21,7 +21,7 @@ var minimist = require('minimist');
 
 var options = minimist(process.argv.slice(2), {
   boolean: 'production',
-  default: { production: process.env.NODE_ENV == 'production'  }
+  default: { production: process.env.NODE_ENV == 'production' , port: 8000  }
 });
 
 const TRANSFORMS = {
@@ -95,7 +95,11 @@ gulp.task('watch', ['build'], function(){
 })
 
 gulp.task('serve', ['build'], function(){
-  gulp.src('build/').pipe(webserver({ livereload: true, open: true }));
+  gulp.src('build/').pipe(webserver({
+    livereload: !options.production,
+    open: !options.production,
+    port: options.port
+  }));
 })
 
 function bundleJs( dest, bundleable ) {
