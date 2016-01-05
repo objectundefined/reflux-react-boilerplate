@@ -14,8 +14,16 @@ var sourcemaps = require('gulp-sourcemaps');
 var postcss = require('gulp-postcss');
 var postcssUrl = require('postcss-url');
 var minifyCss = require('gulp-minify-css');
+var uglify = require('gulp-uglify');
+var gulpif = require('gulp-if');
+var streamify = require('gulp-streamify');
+var minimist = require('minimist');
 
-const DEV = false;
+var options = minimist(process.argv.slice(2), {
+  boolean: 'production',
+  default: { production: process.env.NODE_ENV == 'production'  }
+});
+
 const TRANSFORMS = {
   BABEL : [ "babelify", { presets : [ "es2015", "react"] } ]
 };
@@ -40,8 +48,8 @@ gulp.task('appJs', function () {
   var browserifyApp = browserify({
     entries: [ MAIN ],
     transform: [ TRANSFORMS.BABEL ],
-    debug: DEV,
-    cache: {}, packageCache: {}, fullPaths: DEV
+    debug: !options.production,
+    cache: {}, packageCache: {}, fullPaths: !options.production
   }).external( DEPS.concat(BOWER_DEPS) );
 
   return bundleJs('build/js/main.js', browserifyApp)
@@ -94,17 +102,19 @@ function bundleJs( dest, bundleable ) {
   var [dirname, filename] = pathParts(dest)
   return bundleable.bundle()
     .pipe(source(filename))
-    .pipe(gulp.dest(dirname)) 
+    .pipe(gulpif(options.production, streamify(uglify())))
+    .pipe(gulp.dest(dirname));
 }
 
 function bundleCss( dest, src ) {
   var [dirname, filename] = pathParts(dest);
-  return gulp.src(src).pipe(sourcemaps.init())
-      .pipe(postcss([ postcssUrl({ url: 'copy', assetsPath: '../assets/', useHash:true }) ], {to: dest }))
-      .pipe(minifyCss( {rebase: false} ))
-      .pipe(concat(filename))
-      .pipe(sourcemaps.write())
-      .pipe(gulp.dest(dirname));
+  return gulp.src(src)
+    .pipe(gulpif(!options.production, sourcemaps.init()))
+    .pipe(postcss([ postcssUrl({ url: 'copy', assetsPath: '../assets/', useHash:true }) ], {to: dest }))
+    .pipe(concat(filename))
+    .pipe(gulpif(!options.production, sourcemaps.write()))
+    .pipe(gulpif(options.production, minifyCss({rebase: false})))
+    .pipe(gulp.dest(dirname));
 }
 
 function pathParts(p) {
