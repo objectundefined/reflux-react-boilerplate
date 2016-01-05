@@ -2,17 +2,20 @@ import { default as flux } from 'flux-react'
 import { default as actions } from './actions'
 
 export default flux.createStore({
-  messages: [],
+  comments: [{ author: 'Gabe Lipson', id:0, text:'Hello world' }],
   actions: [
-    actions.addMessage
+    actions.addComment
   ],
-  addMessage: function (message) {
-    this.messages.push(message);
-    this.emitChange();
+  addComment: function (c) {
+    setTimeout(()=>{
+      c.pending = false;
+      this.comments.push(c);
+      this.emitChange();
+    },1000)
   },
   exports: {
-    getMessages: function () {
-      return this.messages;
+    getComments: function () {
+      return this.comments;
     }
   }
 });
