@@ -7,7 +7,7 @@ const DEFAULT_USER = {
   name: 'Gabe Lipson'
 }
 
-export default flux.createStore({
+const Store = flux.createStore({
   comments: [{ author: 'Gabe Lipson', id: Date.now(), text:'Hello world' }],
   user:null,
   actions: [
@@ -21,10 +21,13 @@ export default flux.createStore({
       this.emitChange();
     },1000)
   },
-  logIn: function(creds) {
+  logIn: function(creds, cb) {
     if(creds.email == DEFAULT_USER.email && creds.password == DEFAULT_USER.password) {
       this.user = DEFAULT_USER
       this.emitChange();
+      cb(null, DEFAULT_USER)
+    } else {
+      cb(new Error('Bad Login'), null);
     }
   },
   exports: {
@@ -39,3 +42,23 @@ export default flux.createStore({
     }
   }
 });
+
+
+Store.mixin = function(fetchStateMethodName) {
+  return {
+    applyCurrentState: function() {
+      this.setState(this[fetchStateMethodName]());
+    },
+    componentWillMount: function () {
+      Store.addChangeListener(this.applyCurrentState);
+    },
+    componentWillUnmount: function () {
+      Store.removeChangeListener(this.applyCurrentState);
+    },
+    componentDidMount: function() {
+      this.applyCurrentState();
+    }
+  }
+}
+
+export default Store;

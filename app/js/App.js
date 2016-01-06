@@ -8,15 +8,23 @@ import { default as actions } from './actions'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
 
 const Login = React.createClass({
-  mixins: [LinkedStateMixin],
+  mixins: [LinkedStateMixin, Store.mixin('getCurrentState')],
   getInitialState: function(){
     return { email: '', password: '' };
+  },
+  getCurrentState: function(){
+    return Store.loggedIn() ? Store.getUser() : this.getInitialState();
   },
   isValid: function(){
     return this.state.email.trim() && this.state.password.trim();
   },
-  handleSubmit: function() {
-    
+  handleSubmit: function(evt) {
+    evt.preventDefault()
+    actions.logIn(this.state, (err, user)=>{
+      var foo = this;
+      debugger;
+      
+    })
   },
   render: function(){
     return (
