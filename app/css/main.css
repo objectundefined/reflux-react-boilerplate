@@ -1,13 +1,9 @@
 body {
 	background-color: #EAEAEA;
+  padding:15px;
+  
 }
 
 hr {
   border-color:#fff;
-}
-
-.commentBox {
-  
-  padding:15px;
-  
 }
