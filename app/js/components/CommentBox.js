@@ -1,8 +1,8 @@
 import { default as React } from 'react'
 import { default as ReactDOM } from 'react-dom'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
-import { default as Store } from './Store'
-import { default as actions } from './actions'
+import { default as Store } from '../Store'
+import { default as actions } from '../actions'
 
 
 const CommentBox = React.createClass({

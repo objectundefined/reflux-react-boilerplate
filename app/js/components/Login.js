@@ -1,6 +1,6 @@
 import { default as React } from 'react'
-import { default as Store } from './Store'
-import { default as actions } from './actions'
+import { default as Store } from '../Store'
+import { default as actions } from '../actions'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
 
 export default React.createClass({
