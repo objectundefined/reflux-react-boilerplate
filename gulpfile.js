@@ -98,7 +98,8 @@ gulp.task('serve', ['build'], function(){
   gulp.src('build/').pipe(webserver({
     livereload: !options.production,
     open: !options.production,
-    port: options.port
+    port: options.port,
+    fallback: 'index.html'
   }));
 })
 

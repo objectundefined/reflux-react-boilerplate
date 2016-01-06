@@ -2,7 +2,7 @@ import { default as flux } from 'flux-react'
 import { default as actions } from './actions'
 
 export default flux.createStore({
-  comments: [{ author: 'Gabe Lipson', id:0, text:'Hello world' }],
+  comments: [{ author: 'Gabe Lipson', id: Date.now(), text:'Hello world' }],
   actions: [
     actions.addComment
   ],

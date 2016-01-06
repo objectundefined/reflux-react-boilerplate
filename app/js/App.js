@@ -49,7 +49,7 @@ var Comment = React.createClass({
         <div className="comment panel panel-info">
           <div className="panel-heading commentAuthor">
             {this.props.author}
-            {(this.props.pending) && (
+            {this.props.pending && (
                <span className="pull-right badge">saving <span className="fa fa-spinner fa-spin"/></span>
             )}
           </div>
@@ -65,14 +65,11 @@ var Comment = React.createClass({
 
 var CommentList = React.createClass({
   render: function() {
-    var commentNodes = this.props.comments.map(function(comment) {
-      return (
-        <Comment key={comment.id} { ...comment }></Comment>
-      );
-    });
     return (
       <div className="commentList">
-        {commentNodes}
+        {this.props.comments.map((comment) => (
+          <Comment key={comment.id} { ...comment }></Comment>
+        ))}
       </div>
     );
   }
