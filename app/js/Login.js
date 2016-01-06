@@ -9,7 +9,7 @@ export default React.createClass({
     router: React.PropTypes.object
   },
   getInitialState: function(){
-    return { email: '', password: '' };
+    return { email: '', password: '' , error: null};
   },
   getCurrentState: function(){
     return Store.loggedIn() ? Store.getUser() : this.getInitialState();
@@ -20,12 +20,10 @@ export default React.createClass({
   handleSubmit: function(evt) {
     evt.preventDefault()
     actions.logIn(this.state, (err, user)=>{
-      var router = this.context.router;
-      var _this = this;
       if (err) {
-        alert(err.message)
+        this.setState({error: err})
       } else {
-        router.replace('/comments')
+        this.context.router.replace('/comments')
       }
     })
   },
@@ -36,9 +34,15 @@ export default React.createClass({
           <label htmlFor="exampleInputEmail1">Email address</label>
           <input valueLink={this.linkState('email')} type="email" className="form-control" id="exampleInputEmail1" placeholder="Email"/>
         </div>
-        <div className="form-group">
+        <div className={["form-group", (this.state.error ? 'has-error' : '')].join(" ")}>
           <label htmlFor="exampleInputPassword1">Password</label>
-          <input valueLink={this.linkState('password')} type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"/>
+          <input type="password" 
+            className="form-control" 
+            id="exampleInputPassword1"
+            placeholder="Password"
+            valueLink={this.linkState('password')} 
+            onKeyDown={()=>this.state.error = null}
+          />
         </div>
         <button type="submit" disabled={!this.isValid()} className="btn btn-default">Submit</button>
       </form>
