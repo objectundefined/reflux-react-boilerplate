@@ -1,5 +1,5 @@
 import { default as React } from 'react'
-import { default as CommentsStore } from '../data/CommentsStore'
+import { default as CommentsStore } from '../stores/CommentsStore'
 import { auth as authActions } from '../actions'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
 

@@ -1,7 +1,7 @@
 import { default as React } from 'react'
 import { Router, Route, Link, browserHistory } from 'react-router'
 import { default as CommentBox } from './CommentBox'
-import { default as AuthStore } from '../data/AuthStore'
+import { default as AuthStore } from '../stores/AuthStore'
 import { default as Login } from './Login'
 
 var App = React.createClass({
