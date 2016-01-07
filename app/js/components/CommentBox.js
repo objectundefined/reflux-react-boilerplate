@@ -5,6 +5,7 @@ import { default as CommentsStore } from '../data/CommentsStore'
 import { default as AuthStore } from '../data/AuthStore'
 import { comments as commentsActions } from '../actions'
 import { default as reflux } from 'reflux'
+import { default as _ } from 'lodash'
 
 const CommentBox = React.createClass({
   mixins: [ reflux.connect(CommentsStore, 'comments') ],
@@ -13,7 +14,7 @@ const CommentBox = React.createClass({
       <div className="commentBox">
         <CommentForm onCommentSubmit={commentsActions.add} />
         <hr/>
-        <CommentList comments={this.state.comments.concat([]).reverse()} />
+        <CommentList comments={this.state.comments} reverse={true} />
       </div>
     );
   }
@@ -40,10 +41,16 @@ const Comment = CommentBox.Comment = React.createClass({
 });
 
 const CommentList = CommentBox.CommentList = React.createClass({
+  getDefaultProps: function(){
+    return { comments: [], reverse: false }
+  },
+  commentsInOrder: function() {
+    return this.props.reverse ? this.props.comments.concat([]).reverse() : this.props.comments;
+  },
   render: function() {
     return (
       <div className="commentList">
-        {this.props.comments.map((comment) => (
+        {this.commentsInOrder().map((comment) => (
           <Comment key={comment.id} { ...comment }></Comment>
         ))}
       </div>
