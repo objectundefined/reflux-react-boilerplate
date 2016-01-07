@@ -1,6 +1,6 @@
 import { default as React } from 'react'
 import { default as CommentsStore } from '../data/CommentsStore'
-import { default as actions } from '../actions'
+import { auth as authActions } from '../actions'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
 
 export default React.createClass({
@@ -16,7 +16,7 @@ export default React.createClass({
   },
   handleSubmit: function(evt) {
     evt.preventDefault()
-    actions.logIn(this.state, (err, user)=>{
+    authActions.logIn(this.state, (err, user)=>{
       if (err) {
         this.setState({error: err})
       } else {

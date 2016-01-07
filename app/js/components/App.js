@@ -1,12 +1,12 @@
 import { default as React } from 'react'
 import { Router, Route, Link, browserHistory } from 'react-router'
 import { default as CommentBox } from './CommentBox'
-import { default as UserStore } from '../data/UserStore'
+import { default as AuthStore } from '../data/AuthStore'
 import { default as Login } from './Login'
 
 var App = React.createClass({
   authRequired: function(nextState, replaceState) {
-    if (nextState.location.pathname != '/login' && !UserStore.loggedIn()){
+    if (nextState.location.pathname != '/login' && !AuthStore.loggedIn()){
       replaceState({ nextPathname: nextState.location.pathname }, '/login')
     }
   },

@@ -1,6 +1,3 @@
-import { default as flux } from 'flux-react'
-
-export default flux.createActions([
-  'addComment',
-  'logIn'
-]);
+import { default as reflux } from 'reflux'
+export const comments = reflux.createActions([ 'add' ])
+export const auth = reflux.createActions([ 'logIn' ])

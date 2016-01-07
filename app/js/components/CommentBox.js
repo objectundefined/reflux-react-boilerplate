@@ -2,21 +2,16 @@ import { default as React } from 'react'
 import { default as ReactDOM } from 'react-dom'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
 import { default as CommentsStore } from '../data/CommentsStore'
-import { default as UserStore } from '../data/UserStore'
-import { default as actions } from '../actions'
-import { linkedStoreMixin } from '../utils/mixins'
+import { default as AuthStore } from '../data/AuthStore'
+import { comments as commentsActions } from '../actions'
+import { default as reflux } from 'reflux'
 
 const CommentBox = React.createClass({
-  mixins: [ linkedStoreMixin(CommentsStore, 'getComments', 'comments') ],
-  handleCommentSubmit: function(comment) {
-    // optimistically add new comment, store update will resolve everything later.
-    this.setState({comments: this.state.comments.concat([comment])})
-    actions.addComment(comment);
-  },
+  mixins: [ reflux.connect(CommentsStore, 'comments') ],
   render: function() {
     return (
       <div className="commentBox">
-        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
+        <CommentForm onCommentSubmit={commentsActions.add} />
         <hr/>
         <CommentList comments={this.state.comments.concat([]).reverse()} />
       </div>
@@ -29,7 +24,7 @@ const Comment = CommentBox.Comment = React.createClass({
       return (
         <div className="comment panel panel-info">
           <div className="panel-heading commentAuthor">
-            {this.props.author}
+            {this.props.user.name}
             {this.props.pending && (
                <span className="pull-right badge">saving <span className="fa fa-spinner fa-spin"/></span>
             )}
@@ -57,9 +52,9 @@ const CommentList = CommentBox.CommentList = React.createClass({
 });
 
 const CommentForm = CommentBox.CommentForm = React.createClass({
-  mixins: [LinkedStateMixin],
+  mixins: [reflux.connect(AuthStore, 'user'), LinkedStateMixin],
   getInitialState: function() {
-    return {author: UserStore.getUser().name , text: '', pending: true, id: Date.now()};
+    return { text: '', pending: true, id: Date.now()};
   },
   handleSubmit: function(e) {
     e.preventDefault();
@@ -67,7 +62,7 @@ const CommentForm = CommentBox.CommentForm = React.createClass({
     this.setState(this.getInitialState());
   },
   isValid: function() {
-    return this.state.author.trim() && this.state.text.trim();
+    return !!this.state.text.trim();
   },
   render: function() {
     return (
@@ -75,11 +70,12 @@ const CommentForm = CommentBox.CommentForm = React.createClass({
         <div className="form-group">
           <label htmlFor="authorName">Your Name</label>
           <input
+            disabled={true}
             className="form-control"
             id="authorName"
             type="text"
             placeholder="John Doe"
-            valueLink={this.linkState('author')}
+            value={this.state.user.name}
           />
         </div>
         <div className="form-group">
