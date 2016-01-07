@@ -9,10 +9,10 @@ export default reflux.createStore({
   },
   add: function (c) {
     // trigger update with pending data, wait for server to reconcile.
-    this.trigger(this.comments.concat([c]))
+    this.comments.push(c)
+    this.trigger(this.comments)
     setTimeout(()=>{
       c.pending = false;
-      this.comments.push(c);
       this.trigger(this.comments)
     },1000)
   },
