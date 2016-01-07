@@ -1,18 +1,13 @@
 import { default as React } from 'react'
 import { default as ReactDOM } from 'react-dom'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
-import { default as Store } from '../Store'
+import { default as CommentsStore } from '../data/CommentsStore'
+import { default as UserStore } from '../data/UserStore'
 import { default as actions } from '../actions'
-
+import { linkedStoreMixin } from '../utils/mixins'
 
 const CommentBox = React.createClass({
-  mixins: [Store.mixin('getCurrentState')],
-  getInitialState: function() {
-    return {comments: []};
-  },
-  getCurrentState: function() {
-    return {comments: Store.getComments()};
-  },
+  mixins: [ linkedStoreMixin(CommentsStore, 'getComments', 'comments') ],
   handleCommentSubmit: function(comment) {
     // optimistically add new comment, store update will resolve everything later.
     this.setState({comments: this.state.comments.concat([comment])})
@@ -65,7 +60,7 @@ const CommentList = CommentBox.CommentList = React.createClass({
 const CommentForm = CommentBox.CommentForm = React.createClass({
   mixins: [LinkedStateMixin],
   getInitialState: function() {
-    return {author: Store.getUser().name , text: '', pending: true, id: Date.now()};
+    return {author: UserStore.getUser().name , text: '', pending: true, id: Date.now()};
   },
   handleSubmit: function(e) {
     e.preventDefault();

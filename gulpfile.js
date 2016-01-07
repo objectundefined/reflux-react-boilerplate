@@ -87,8 +87,8 @@ gulp.task('default', ['build']);
 
 gulp.task('watch', ['build'], function(){
   gutil.log('watching')
-  gulp.watch('app/js/*', ['appJs'])
-  gulp.watch('app/css/*', ['appCss'])
+  gulp.watch('app/js/**/*.js', ['appJs'])
+  gulp.watch('app/css/**/*.css', ['appCss'])
   gulp.watch('app/index.html', ['copyHtml'])
   gulp.watch('package.json', ['vendorJs'])
   gulp.watch('bower.json', ['vendorCss', 'vendorJs'])

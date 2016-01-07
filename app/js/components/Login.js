@@ -1,5 +1,5 @@
 import { default as React } from 'react'
-import { default as Store } from '../Store'
+import { default as CommentsStore } from '../data/CommentsStore'
 import { default as actions } from '../actions'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
 
@@ -10,9 +10,6 @@ export default React.createClass({
   },
   getInitialState: function(){
     return { email: '', password: '' , error: null};
-  },
-  getCurrentState: function(){
-    return Store.loggedIn() ? Store.getUser() : this.getInitialState();
   },
   isValid: function(){
     return this.state.email.trim() && this.state.password.trim();
