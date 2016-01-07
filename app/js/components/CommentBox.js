@@ -11,7 +11,7 @@ const CommentBox = React.createClass({
   handleCommentSubmit: function(comment) {
     // optimistically add new comment, store update will resolve everything later.
     this.setState({comments: this.state.comments.concat([comment])})
-    actions.addComment(comment);    
+    actions.addComment(comment);
   },
   render: function() {
     return (
@@ -23,7 +23,6 @@ const CommentBox = React.createClass({
     );
   }
 });
-
 
 const Comment = CommentBox.Comment = React.createClass({
     render: function() {
