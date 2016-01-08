@@ -1,5 +1,5 @@
 import { default as reflux } from 'reflux'
-import { auth as authActions } from '../actions'
+import * as actions from '../actions'
 
 const DEFAULT_USER = {
   email: 'gabriel.lipson@gmail.com',
@@ -9,7 +9,7 @@ const DEFAULT_USER = {
 
 export default reflux.createStore({
   user:null,
-  listenables: [ authActions ],
+  listenables: [ actions.auth ],
   getInitialState: function() {
       return this.user;
   },

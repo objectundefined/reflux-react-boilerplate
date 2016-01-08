@@ -3,7 +3,7 @@ import { default as ReactDOM } from 'react-dom'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
 import { default as CommentsStore } from '../stores/CommentsStore'
 import { default as AuthStore } from '../stores/AuthStore'
-import { comments as commentsActions } from '../actions'
+import * as actions from '../actions'
 import { default as reflux } from 'reflux'
 import { default as _ } from 'lodash'
 
@@ -12,9 +12,25 @@ const CommentBox = React.createClass({
   render: function() {
     return (
       <div className="commentBox">
-        <CommentForm onCommentSubmit={commentsActions.add} />
+        <CommentForm onCommentSubmit={actions.comments.add} />
         <hr/>
         <CommentList comments={this.state.comments} reverse={true} />
+      </div>
+    );
+  }
+});
+
+const CommentList = CommentBox.CommentList = React.createClass({
+  getDefaultProps: _.constant({ comments: [], reverse: false }),
+  commentsInOrder: function() {
+    return this.props.reverse ? this.props.comments.concat([]).reverse() : this.props.comments;
+  },
+  render: function() {
+    return (
+      <div className="commentList">
+        {this.commentsInOrder().map((comment) => (
+          <Comment key={comment.id} { ...comment }></Comment>
+        ))}
       </div>
     );
   }
@@ -40,29 +56,9 @@ const Comment = CommentBox.Comment = React.createClass({
     }
 });
 
-const CommentList = CommentBox.CommentList = React.createClass({
-  getDefaultProps: function(){
-    return { comments: [], reverse: false }
-  },
-  commentsInOrder: function() {
-    return this.props.reverse ? this.props.comments.concat([]).reverse() : this.props.comments;
-  },
-  render: function() {
-    return (
-      <div className="commentList">
-        {this.commentsInOrder().map((comment) => (
-          <Comment key={comment.id} { ...comment }></Comment>
-        ))}
-      </div>
-    );
-  }
-});
-
 const CommentForm = CommentBox.CommentForm = React.createClass({
   mixins: [reflux.connect(AuthStore, 'user'), LinkedStateMixin],
-  getInitialState: function() {
-    return { text: '', pending: true, id: Date.now()};
-  },
+  getInitialState: _.constant({ text: '', pending: true }),
   handleSubmit: function(e) {
     e.preventDefault();
     this.props.onCommentSubmit(this.state);
@@ -76,23 +72,11 @@ const CommentForm = CommentBox.CommentForm = React.createClass({
       <form className="commentForm" onSubmit={this.handleSubmit}>
         <div className="form-group">
           <label htmlFor="authorName">Your Name</label>
-          <input
-            disabled={true}
-            className="form-control"
-            id="authorName"
-            type="text"
-            placeholder="John Doe"
-            value={this.state.user.name}
-          />
+          <input disabled={true} className="form-control" id="authorName" type="text"  value={this.state.user.name} />
         </div>
         <div className="form-group">
           <label htmlFor="commentInput">Comment</label>
-          <textarea
-            className="form-control"
-            id="commentInput"
-            placeholder="Hello World"
-            valueLink={this.linkState('text')}
-          />
+          <textarea className="form-control" id="commentInput" placeholder="Hello World" valueLink={this.linkState('text')}/>
         </div>
         <button type="submit" disabled={ ! this.isValid() } value="Post" className="btn btn-default">Submit</button>
       </form>

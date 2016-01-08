@@ -1,13 +1,15 @@
 import { default as reflux } from 'reflux'
-import { comments as commentActions } from '../actions'
+import * as actions from '../actions'
 
 export default reflux.createStore({
   comments: [{ user: {name: 'Gabe Lipson'}, id: Date.now(), text:'Hello world' }],
-  listenables: [ commentActions ],
+  listenables: [ actions.comments ],
   getInitialState: function() {
       return this.comments;
   },
   add: function (c) {
+    // set a temp id
+    c.id = Date.now();
     // trigger update with pending data, wait for server to reconcile.
     this.comments.push(c)
     this.trigger(this.comments)

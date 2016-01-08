@@ -1,22 +1,19 @@
 import { default as React } from 'react'
 import { default as CommentsStore } from '../stores/CommentsStore'
-import { auth as authActions } from '../actions'
+import * as actions from '../actions'
 import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
+import { default as _ } from 'lodash'
 
 export default React.createClass({
   mixins: [LinkedStateMixin],
-  contextTypes: {
-    router: React.PropTypes.object
-  },
-  getInitialState: function(){
-    return { email: '', password: '' , error: null};
-  },
+  contextTypes: { router: React.PropTypes.object },
+  getInitialState: _.constant({ email: '', password: '' , error: null}),
   isValid: function(){
     return this.state.email.trim() && this.state.password.trim();
   },
   handleSubmit: function(evt) {
     evt.preventDefault()
-    authActions.logIn(this.state, (err, user)=>{
+    actions.auth.logIn(this.state, (err, user)=>{
       if (err) {
         this.setState({error: err})
       } else {
