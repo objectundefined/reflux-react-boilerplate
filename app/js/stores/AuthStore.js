@@ -22,8 +22,5 @@ export default Reflux.createStore({
 			let err = new Error('Bad Login');
 			actions.auth.login.failed(err);
 		}
-	},
-  loggedIn: function(){
-    return !!this.user;
-  }
+	}
 });
