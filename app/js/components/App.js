@@ -1,8 +1,8 @@
-import { default as React } from 'react'
+import React from 'react' 
 import { Router, Route, Link, browserHistory } from 'react-router'
-import { default as CommentBox } from './CommentBox'
-import { default as AuthStore } from '../stores/AuthStore'
-import { default as Login } from './Login'
+import CommentBox from './CommentBox' 
+import AuthStore from '../stores/AuthStore' 
+import Login from './Login' 
 
 var App = React.createClass({
   authRequired: function(nextState, replaceState) {

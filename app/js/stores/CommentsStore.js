@@ -1,7 +1,7 @@
-import { default as reflux } from 'reflux'
+import Reflux from 'reflux' 
 import * as actions from '../actions'
 
-export default reflux.createStore({
+export default Reflux.createStore({
   comments: [{ user: {name: 'Gabe Lipson'}, id: Date.now(), text:'Hello world' }],
   listenables: [ actions.comments ],
   getInitialState: function() {

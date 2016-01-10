@@ -1,8 +1,8 @@
-import { default as React } from 'react'
-import { default as CommentsStore } from '../stores/CommentsStore'
+import React from 'react' 
+import CommentsStore from '../stores/CommentsStore' 
 import * as actions from '../actions'
-import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
-import { default as _ } from 'lodash'
+import LinkedStateMixin from 'react-addons-linked-state-mixin' 
+import _ from 'lodash' 
 
 export default React.createClass({
   mixins: [LinkedStateMixin],

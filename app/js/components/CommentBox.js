@@ -1,14 +1,14 @@
-import { default as React } from 'react'
-import { default as ReactDOM } from 'react-dom'
-import { default as LinkedStateMixin } from 'react-addons-linked-state-mixin'
-import { default as CommentsStore } from '../stores/CommentsStore'
-import { default as AuthStore } from '../stores/AuthStore'
+import React from 'react' 
+import ReactDOM from 'react-dom' 
+import LinkedStateMixin from 'react-addons-linked-state-mixin' 
+import CommentsStore from '../stores/CommentsStore' 
+import AuthStore from '../stores/AuthStore' 
 import * as actions from '../actions'
-import { default as reflux } from 'reflux'
-import { default as _ } from 'lodash'
+import Reflux from 'reflux' 
+import _ from 'lodash' 
 
 const CommentBox = React.createClass({
-  mixins: [ reflux.connect(CommentsStore, 'comments') ],
+  mixins: [ Reflux.connect(CommentsStore, 'comments') ],
   render: function() {
     return (
       <div className="commentBox">
@@ -57,7 +57,7 @@ const Comment = CommentBox.Comment = React.createClass({
 });
 
 const CommentForm = CommentBox.CommentForm = React.createClass({
-  mixins: [reflux.connect(AuthStore, 'user'), LinkedStateMixin],
+  mixins: [Reflux.connect(AuthStore, 'user'), LinkedStateMixin],
   getInitialState: _.constant({ text: '', pending: true }),
   handleSubmit: function(e) {
     e.preventDefault();
