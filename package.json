@@ -1,8 +1,8 @@
 {
   "name": "flux-react-boilerplate",
-  "version": "3.0.0",
+  "version": "1.0.0",
   "description": "React application boilerplate",
-  "author": "Christian Alfoni",
+  "author": "Gabriel Lipson",
   "license": "ISC",
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",

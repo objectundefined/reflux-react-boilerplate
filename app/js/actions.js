@@ -1,3 +1,8 @@
-import Reflux from 'Reflux' 
-export const comments = Reflux.createActions([ 'add' ])
-export const auth = Reflux.createActions([ 'logIn' ])
+import Reflux from 'reflux' 
+
+export const comments = Reflux.createActions({
+	add: { asyncResult: true }
+})
+export const auth = Reflux.createActions({
+	login: { asyncResult: true }
+})

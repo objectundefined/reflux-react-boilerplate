@@ -13,37 +13,17 @@ export default Reflux.createStore({
   getInitialState: function() {
       return this.user;
   },
-	// logIn: function(creds) {
-	// 	if(creds.email == DEFAULT_USER.email && creds.password == DEFAULT_USER.password) {
-	// 		let user = DEFAULT_USER;
-	// 		this.user = user;
-	// 		actions.auth.logIn.completed(user);
-	// 	} else {
-	// 		let err = new Error('Bad Login');
-	// 		actions.auth.logIn.failed(err);
-	// 	}
-	// },
-	logIn: function(creds, cb) {
-		cb = cb || function(){};
-	  if(creds.email == DEFAULT_USER.email && creds.password == DEFAULT_USER.password) {
-			this.logInCompleted(DEFAULT_USER);
-	      cb(null, DEFAULT_USER)
-	    } else {
-	      cb(new Error('Bad Login'), null);
-			this.logInFailed(new Error('Bad Login'))
-	    }
-	  },
-	logInCompleted: function(user){
-	    this.user = DEFAULT_USER;
-		this.trigger(this.user);
-	},
-	logInFailed: function(){
-		this.trigger(this.user);
+	login: function(creds) {
+		if(creds.email == DEFAULT_USER.email && creds.password == DEFAULT_USER.password) {
+			let user = DEFAULT_USER;
+			this.user = user;
+			actions.auth.login.completed(user);
+		} else {
+			let err = new Error('Bad Login');
+			actions.auth.login.failed(err);
+		}
 	},
   loggedIn: function(){
     return !!this.user;
-  },
-  getUser: function(){
-    return this.user;
   }
 });

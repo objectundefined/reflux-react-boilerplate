@@ -13,13 +13,13 @@ export default React.createClass({
   },
   handleSubmit: function(evt) {
     evt.preventDefault()
-    actions.auth.logIn(this.state, (err, user)=>{
-      if (err) {
-        this.setState({error: err})
-      } else {
+		actions.auth.login(this.state)
+			.then((user)=>{
         this.context.router.replace('/comments')
-      }
-    })
+			})
+			.catch((err)=>{
+        this.setState({error: err})
+			})
   },
   render: function(){
     return (

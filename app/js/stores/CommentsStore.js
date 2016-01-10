@@ -12,13 +12,11 @@ export default Reflux.createStore({
     c.id = Date.now();
     // trigger update with pending data, wait for server to reconcile.
     this.comments.push(c)
-    this.trigger(this.comments)
+    this.trigger(this.comments)		
     setTimeout(()=>{
       c.pending = false;
-      this.trigger(this.comments)
+			actions.comments.add.completed(c);
+			this.trigger(this.comments)
     },1000)
-  },
-  getComments: function() {
-    return this.comments;
   }
 });
