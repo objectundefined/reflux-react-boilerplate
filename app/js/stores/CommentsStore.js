@@ -15,8 +15,8 @@ export default Reflux.createStore({
     this.trigger(this.comments)		
     setTimeout(()=>{
       c.pending = false;
-			actions.comments.add.completed(c);
 			this.trigger(this.comments)
+			actions.comments.add.completed(c);
     },1000)
   }
 });

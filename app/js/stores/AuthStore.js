@@ -17,6 +17,7 @@ export default Reflux.createStore({
 		if(creds.email == DEFAULT_USER.email && creds.password == DEFAULT_USER.password) {
 			let user = DEFAULT_USER;
 			this.user = user;
+			this.trigger(user)
 			actions.auth.login.completed(user);
 		} else {
 			let err = new Error('Bad Login');
