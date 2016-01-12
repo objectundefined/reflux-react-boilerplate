@@ -4,5 +4,6 @@ export const comments = Reflux.createActions({
 	add: { asyncResult: true }
 })
 export const auth = Reflux.createActions({
-	login: { asyncResult: true }
+	login: { asyncResult: true },
+	logout: { asyncResult: true }
 })

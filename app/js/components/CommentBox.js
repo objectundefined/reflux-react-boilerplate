@@ -6,12 +6,14 @@ import AuthStore from '../stores/AuthStore'
 import * as actions from '../actions'
 import Reflux from 'reflux' 
 import _ from 'lodash' 
+import {Link} from 'react-router'
 
 const CommentBox = React.createClass({
   mixins: [ Reflux.connect(CommentsStore, 'comments') ],
   render: function() {
     return (
       <div className="commentBox">
+        <Link to={'/'} className="pull-right" onClick={actions.auth.logout}>log out</Link>
         <CommentForm onCommentSubmit={actions.comments.add} />
         <hr/>
         <CommentList comments={this.state.comments} reverse={true} />

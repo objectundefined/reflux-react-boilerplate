@@ -13,6 +13,11 @@ export default Reflux.createStore({
   getInitialState: function() {
       return this.user;
   },
+  logout: function() {
+    this.user = null;
+    this.trigger(this.user);
+    actions.auth.logout.completed(null);
+  },
 	login: function(creds) {
 		if(creds.email == DEFAULT_USER.email && creds.password == DEFAULT_USER.password) {
 			let user = DEFAULT_USER;
@@ -23,5 +28,8 @@ export default Reflux.createStore({
 			let err = new Error('Bad Login');
 			actions.auth.login.failed(err);
 		}
-	}
+	},
+  isLoggedIn: function() {
+    return !!this.user;
+  }
 });
