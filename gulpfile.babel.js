@@ -79,7 +79,7 @@ function bundleJs(watching=false) {
   
   return bundling
     .pipe(source('main.js'))
-    .pipe(gulpif(options.production, streamify(uglify({mangle:false}))))
+    .pipe(gulpif(options.production, streamify(uglify())))
     .pipe(gulp.dest('build/js'))  
     .on('error', gutil.log)
     .pipe(notify({ message: 'built build/js/main.js' }))
