@@ -61,9 +61,6 @@ gulp.task('serve', ['build'], function(){
     },
     open: !options.production,
     port: options.port,
-    proxies: [
-      { source: '/db', target: 'http://fl1.deep6analytics.com:7474/db', options: {} }
-    ],
     fallback: 'index.html'
   }));
 })
