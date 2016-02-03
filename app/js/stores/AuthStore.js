@@ -2,9 +2,9 @@ import Reflux from 'reflux'
 import * as actions from '../actions'
 
 const DEFAULT_USER = {
-  email: 'gabriel.lipson@gmail.com',
+  email: 'admin@admin.com',
   password: 'password',
-  name: 'Gabe Lipson'
+  name: 'Admin'
 }
 
 export default Reflux.createStore({
