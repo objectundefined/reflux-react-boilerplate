@@ -46,9 +46,11 @@
     "react": "^0.14.5",
     "react-addons-linked-state-mixin": "^0.14.5",
     "react-dom": "^0.14.5",
+    "react-mixin": "^3.0.3",
     "react-router": "^2.0.0-rc4",
     "reflux": "^0.3.0",
-    "reflux-promise": "^1.0.2"
+    "reflux-promise": "^1.0.2",
+    "reflux-state-mixin": "^0.6.3"
   },
   "scripts": {
     "gulp": "node --harmony_destructuring `which gulp`"

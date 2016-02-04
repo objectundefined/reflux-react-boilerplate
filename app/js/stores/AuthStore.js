@@ -1,5 +1,6 @@
 import Reflux from 'reflux' 
 import * as actions from '../actions'
+import StateMixin from 'reflux-state-mixin'
 
 const DEFAULT_USER = {
   email: 'admin@admin.com',
@@ -8,28 +9,25 @@ const DEFAULT_USER = {
 }
 
 export default Reflux.createStore({
-  user:null,
+
   listenables: [ actions.auth ],
-  getInitialState: function() {
-      return this.user;
+  mixins: [StateMixin.store],
+  getInitialState() {
+      return { user: null };
   },
-  logout: function() {
-    this.user = null;
-    this.trigger(this.user);
-    actions.auth.logout.completed(null);
+  logout() {
+    this.setState({ user: null })
   },
-	login: function(creds) {
-		if(creds.email == DEFAULT_USER.email && creds.password == DEFAULT_USER.password) {
-			let user = DEFAULT_USER;
-			this.user = user;
-			this.trigger(user)
-			actions.auth.login.completed(user);
-		} else {
-			let err = new Error('Bad Login');
-			actions.auth.login.failed(err);
-		}
-	},
-  isLoggedIn: function() {
-    return !!this.user;
+  login(creds) {
+    if(creds.email == DEFAULT_USER.email && creds.password == DEFAULT_USER.password) {
+      actions.auth.login.completed(this.state.user);
+      this.setState({ user: DEFAULT_USER })
+    } else {
+      let err = new Error('Bad Login');
+      actions.auth.login.failed(err);
+    }
+  },
+  isLoggedIn() {
+    return !!this.state.user;
   }
 });

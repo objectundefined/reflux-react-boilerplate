@@ -1,27 +1,29 @@
 import Reflux from 'reflux' 
 import * as actions from '../actions'
+import StateMixin from 'reflux-state-mixin'
 
 export default Reflux.createStore({
-  comments: [{ user: {name: 'Gabe Lipson'}, id: Date.now(), text:'Hello world' }],
-  // listenables: [ actions.comments ],
-  init: function(){
-    actions.comments.add.listenAndPromise(this.add, this)
+  
+  listenables: [ actions.comments ],
+  
+  mixins: [StateMixin.store],
+  
+  getInitialState() {
+    return {
+      comments: [{ user: {name: 'Somebody Else'}, id: Date.now(), text:'Hello world' }]
+    }
   },
-  getInitialState: function() {
-      return this.comments;
-  },
-  add: function (c) {
-      // set a temp id
-      c.id = Date.now();
+
+  add(c) {
+      // make a new inst to emulate some json coming back
+      var comment = Object.assign({}, c);
       // trigger update with pending data, wait for server to reconcile.
-      this.comments.push(c)
-      this.trigger(this.comments)
-      return new Promise((resolve)=>{
-        setTimeout(()=>{
-          c.pending = false;
-          this.trigger(this.comments)
-          resolve(c)
-        },5000)
-      })
+      setTimeout(()=>{
+        // server assigns a real id
+        comment.id = Date.now();
+        comment.pending = false;
+        actions.comments.add.completed(comment)
+        this.setState({ comments: this.state.comments.concat(comment) })
+      },5000)
   }
 });

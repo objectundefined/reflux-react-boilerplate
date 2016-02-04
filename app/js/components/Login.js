@@ -1,27 +1,33 @@
-import React from 'react' 
+import React, { Component } from 'react' 
 import CommentsStore from '../stores/CommentsStore' 
 import * as actions from '../actions'
 import LinkedStateMixin from 'react-addons-linked-state-mixin' 
 import _ from 'lodash' 
+import ReactMixin from 'react-mixin'
 
-export default React.createClass({
-  mixins: [LinkedStateMixin],
-  contextTypes: { router: React.PropTypes.object },
-  getInitialState: _.constant({ email: '', password: '' , error: null}),
-  isValid: function(){
+@ReactMixin.decorate(LinkedStateMixin)
+export default class LoginForm extends Component {
+  
+  static contextTypes = { router: React.PropTypes.object };
+  state = { email: '', password: '' , error: null};
+  
+  isValid() {
     return this.state.email.trim() && this.state.password.trim();
-  },
-  handleSubmit: function(evt) {
+  }
+  
+  handleSubmit(evt) {
     evt.preventDefault()
-		actions.auth.login(this.state).then((user)=>{
-			this.context.router.push('/')
-		}).catch((err)=>{
-      this.setState({error: err})
-		})
-  },
-  render: function(){
+    actions.auth.login(this.state)
+      .then((user)=>{
+        this.context.router.push('/')
+      }).catch((err)=>{
+        this.setState({error: err})
+      })
+  }
+  
+  render(){
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={(evt)=>this.handleSubmit(evt)}>
         <div className="form-group">
           <label htmlFor="exampleInputEmail1">Email address</label>
           <input valueLink={this.linkState('email')} type="email" className="form-control" id="exampleInputEmail1" placeholder="Email"/>
@@ -40,4 +46,5 @@ export default React.createClass({
       </form>
     )
   }
-})
+  
+}
